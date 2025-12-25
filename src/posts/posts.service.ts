@@ -47,4 +47,10 @@ export class PostsService {
     if (!post) throw new NotFoundException(`Post with id ${id} not found`);
     return post;
   }
+
+  createPost(createPostData): Post{}
+
+  updatePost(id:number, updatePostData): Post {}
+
+  deletePost(id:number) {}
 }
