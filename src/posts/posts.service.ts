@@ -1,56 +1,52 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Post } from './types/post.types';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Post } from './entities/post.entities';
+import { Repository } from 'typeorm';
+import { CreatePostDto } from './dto/create-post.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
 
 @Injectable()
 export class PostsService {
-  private posts: Post[] = [
-    {
-      id: 1,
-      label: 'My First Posts',
-      description: 'First Posts description',
-      authorName: 'John Doe',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: 2,
-      label: 'My Second Posts',
-      description: 'Second Posts description',
-      authorName: 'John Doe',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: 3,
-      label: 'My Third Posts',
-      description: 'Third Posts description',
-      authorName: 'John Doe',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: 4,
-      label: 'My Fourth Posts',
-      description: 'Fourth Posts description',
-      authorName: 'John Doe',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ];
 
-  getAllPosts(): Post[] {
-    return this.posts;
+  constructor(
+    @InjectRepository(Post)
+    private postRepository: Repository<Post>
+  ){}
+
+
+  async getAllPosts(): Promise<Post[]> {
+    const posts = await this.postRepository.find();
+    return posts;
   }
 
-  getPostById(id: number): Post {
-    const post = this.posts.find((post) => post.id === id);
+  async getPostById(id: number): Promise<Post> {
+    const post = await this.postRepository.findOneBy({id})
     if (!post) throw new NotFoundException(`Post with id ${id} not found`);
     return post;
   }
 
-  createPost(createPostData): Post{}
+  async createPost(createPostData: CreatePostDto): Promise<Post>{
+    const post = await this.postRepository.create({
+      label: createPostData.label,
+      description: createPostData.description,
+      authorName: createPostData.authorName
+    })
 
-  updatePost(id:number, updatePostData): Post {}
+    return this.postRepository.save(post);
+  }
 
-  deletePost(id:number) {}
+  async updatePost(id:number, updatePostData:UpdatePostDto): Promise<Post> {
+    const post = await this.getPostById(id);
+    if(updatePostData.label)  post.label = updatePostData?.label;
+    if(updatePostData.description) post.description = updatePostData?.description;
+    if(updatePostData.authorName) post.authorName = updatePostData?.authorName;
+
+    return this.postRepository.save(post)
+  }
+
+  async deletePost(id:number): Promise<void> {
+    const post = await this.getPostById(id);
+    this.postRepository.remove(post)
+
+  }
 }

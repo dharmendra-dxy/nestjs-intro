@@ -20,7 +20,7 @@ import { Post } from './posts/entities/post.entities';
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'postgres',
+      password: '1234',
       database: 'nestjs-intro',
       entities: [Post],
       synchronize: true, // only for development mode
