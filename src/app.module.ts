@@ -7,8 +7,9 @@ import { ConfigModule } from '@nestjs/config';
 import { PostsModule } from './posts/posts.module';
 import appConfig from './config/app.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Post } from './posts/entities/post.entities';
 import { AuthModule } from './auth/auth.module';
+import { Post } from './posts/entities/post.entities';
+import { User } from './auth/entities/user.entity';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { AuthModule } from './auth/auth.module';
       username: 'postgres',
       password: '1234',
       database: 'nestjs-intro',
-      entities: [Post],
+      entities: [Post, User],
       synchronize: true, // only for development mode
     }),
     HealthModule,
