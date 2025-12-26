@@ -8,6 +8,7 @@ import { PostsModule } from './posts/posts.module';
 import appConfig from './config/app.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Post } from './posts/entities/post.entities';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { Post } from './posts/entities/post.entities';
     HealthModule,
     UserModule,
     PostsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
